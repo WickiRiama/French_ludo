@@ -1,9 +1,9 @@
 Mandatory
 
 Dice Roller
-	Roll button
-	Script to generate random number
-	Dice assets
+	Roll button OK
+	Script to generate random number OK
+	Dice assets OK but ugly
 	Dice animation
 Horse selection
 	Horses which can move are visibles
@@ -16,7 +16,7 @@ Movement
 	Eat other players horses
 Board
 	Place Camera
-	Stables
+	Stables OK
 	Numbered center tiles
 Game End
 Turns
