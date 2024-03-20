@@ -1,0 +1,27 @@
+Mandatory
+
+Dice Roller
+	Roll button
+	Script to generate random number
+	Dice assets
+	Dice animation
+Movement
+	Check if movement is possible
+	Advance of expected number of tiles
+	Animate
+	Eat other players horses
+Board
+	Place Camera
+	Stables
+	Numbered center tiles
+Game End
+Turns
+AI playing for other 3 players
+Write rules in the README
+
+If time
+
+Choose color of the player
+	Have a start screen for choosing
+	Several cameras, chosen according to the color choice
+Wandering mode
