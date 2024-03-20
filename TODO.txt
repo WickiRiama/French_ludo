@@ -5,6 +5,10 @@ Dice Roller
 	Script to generate random number
 	Dice assets
 	Dice animation
+Horse selection
+	Horses which can move are visibles
+	On hover, the arrival tile is visibles
+	On click, the horse move
 Movement
 	Check if movement is possible
 	Advance of expected number of tiles
@@ -16,6 +20,11 @@ Board
 	Numbered center tiles
 Game End
 Turns
+	Roll Dice
+	See options
+	Select Horse
+	Horse moves
+	End of turn
 AI playing for other 3 players
 Write rules in the README
 
