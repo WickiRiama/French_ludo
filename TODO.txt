@@ -15,7 +15,7 @@ Movement
 	Animate
 	Eat other players horses
 Board
-	Place Camera
+	Place Camera OK
 	Stables OK
 	Numbered center tiles
 Game End
