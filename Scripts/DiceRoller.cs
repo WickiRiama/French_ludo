@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class DiceRoller : MonoBehaviour
 {
-	public int value = 1;
+	public int value;
 	public Sprite[] faces;
 
 	// Start is called before the first frame update
 	void Start()
 	{
-		
+		value = 0;
 	}
 
 	// Update is called once per frame
