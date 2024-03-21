@@ -10,18 +10,38 @@ public class BlueHorse : MonoBehaviour
 
 	DiceRoller diceRoller;
 	Tile currentTile;
+	Vector3 targetPosition;
+	Vector3 targetRotation;
 	Tile[] path;
+	int pathIndex = 0;
+	Vector3 velocityPosition;
+	float velocityRotation;
+	float smoothTime = 0.25f;
 
 	// Start is called before the first frame update
 	void Start()
 	{
 		diceRoller = GameObject.FindObjectOfType<DiceRoller>();
+		setTarget(this.currentTile);
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		
+		if (Vector3.Distance(this.transform.position, targetPosition) > 0.05f)
+		{
+			this.transform.position = Vector3.SmoothDamp(this.transform.position, targetPosition, ref velocityPosition, smoothTime);
+			float angleY = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, targetRotation.y, ref velocityRotation, smoothTime);
+			this.transform.rotation = Quaternion.Euler(0, angleY, 0);
+		}
+		else
+		{
+			if (path != null && pathIndex < path.Length)
+			{
+				setTarget(path[pathIndex]);
+				pathIndex++;
+			}
+		}
 	}
 
 	void OnMouseUp()
@@ -32,13 +52,14 @@ public class BlueHorse : MonoBehaviour
 	private void Move()
 	{
 		CreatePath();
-		// Debug.Log(path);
 	}
 
 	private void CreatePath()
 	{
-		Tile targetTile = currentTile;
 		int nbMoves = diceRoller.value + 1;
+		Tile targetTile = currentTile;
+		path = new Tile[nbMoves];
+		pathIndex = 0;
 
 		for (int i = 0; i < nbMoves; i++)
 		{
@@ -50,11 +71,24 @@ public class BlueHorse : MonoBehaviour
 			{
 				targetTile = targetTile.nextTiles[0];
 			}
-			// path.Append(targetTile);
-			// Debug.Log("Path" + path[i].name);
+			path[i] = targetTile;
 		}
+	}
 
-		this.transform.position = targetTile.transform.position;
-		currentTile = targetTile;
+	void setTarget(Tile tile)
+	{
+		if (!tile)
+		{
+			targetPosition = this.transform.position;
+			targetRotation = this.transform.rotation.eulerAngles;
+		}
+		else
+		{
+			targetPosition = tile.transform.position;
+			targetRotation = tile.transform.rotation.eulerAngles;
+		}
+		velocityPosition = Vector3.zero;
+		velocityRotation = 0f;
+		currentTile = tile;
 	}
 }
