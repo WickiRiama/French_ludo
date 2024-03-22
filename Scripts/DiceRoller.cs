@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 public class DiceRoller : MonoBehaviour
 {
-	public int value;
 	public Sprite[] faces;
+
+	StateManager stateManager;
 
 	// Start is called before the first frame update
 	void Start()
 	{
-		value = 0;
+		stateManager = GameObject.FindObjectOfType<StateManager>();
 	}
 
 	// Update is called once per frame
@@ -22,8 +23,12 @@ public class DiceRoller : MonoBehaviour
 
 	public void RollTheDice()
 	{
-		value = Random.Range(0, 6);
-		this.GetComponent<Image>().sprite = faces[value];
-		Debug.Log("Roll value: " + value.ToString());
+		if (!stateManager.isDoneRolling)
+		{
+			int value = Random.Range(0, 6);
+			this.GetComponent<Image>().sprite = faces[value];
+			stateManager.diceValue = value;
+			stateManager.isDoneRolling = true;
+		}
 	}
 }
