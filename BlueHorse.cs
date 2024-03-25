@@ -6,47 +6,56 @@ using UnityEngine;
 
 public class BlueHorse : MonoBehaviour
 {
+	// First tile of pathway
+	public Tile startingTile;
+
+	// State
 	StateManager stateManager;
 	bool isMoving;
-
-	public Tile startingTile;
 	Tile currentTile;
 
-	Vector3 targetPosition;
-	Vector3 targetRotation;
+	// Start
+	Transform startStable;
+
+	// Move
+	Transform target;
+	Tile[] path;
+	int pathIndex = 0;
+
+	// Animation
 	Vector3 velocityPosition;
 	float velocityRotation;
 	float smoothTime = 0.25f;
 
-	Tile[] path;
-	int pathIndex = 0;
-
-	// Start is called before the first frame update
 	void Start()
 	{
 		stateManager = GameObject.FindObjectOfType<StateManager>();
 		isMoving = false;
-		setTarget(this.currentTile);
+		startStable = this.transform;
+		setTarget(null);
 	}
 
-	// Update is called once per frame
 	void Update()
 	{
 		if (isMoving)
 		{
-			if (Vector3.Distance(this.transform.position, targetPosition) > 0.05f)
+			// Not arrived yet
+			if (Vector3.Distance(this.transform.position, target.position) > 0.05f)
 			{
-				this.transform.position = Vector3.SmoothDamp(this.transform.position, targetPosition, ref velocityPosition, smoothTime);
-				float angleY = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, targetRotation.y, ref velocityRotation, smoothTime);
+				this.transform.position = Vector3.SmoothDamp(this.transform.position, target.position, ref velocityPosition, smoothTime);
+				float angleY = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, target.rotation.y, ref velocityRotation, smoothTime);
 				this.transform.rotation = Quaternion.Euler(0, angleY, 0);
 			}
+			// Arrived at target
 			else
 			{
+				// Go to next target in the path
 				if (path != null && pathIndex < path.Length)
 				{
 					setTarget(path[pathIndex]);
 					pathIndex++;
 				}
+				// Arrived at the end of the path
 				else
 				{
 					isMoving = false;
@@ -58,6 +67,7 @@ public class BlueHorse : MonoBehaviour
 
 	void OnMouseUp()
 	{
+		// The dice has been rolled, and no other hosre has been selected
 		if (stateManager.isDoneRolling && !stateManager.isDoneClicking)
 		{
 			stateManager.isDoneClicking = true;
@@ -81,27 +91,24 @@ public class BlueHorse : MonoBehaviour
 			}
 			else
 			{
-				// if (targetTile.GetType() =)
 				targetTile = targetTile.nextTiles[0];
 			}
 			path[i] = targetTile;
 		}
 	}
 
-	void setTarget(Tile tile)
+	void setTarget(Tile target)
 	{
-		if (!tile)
+		if (target == null)
 		{
-			targetPosition = this.transform.position;
-			targetRotation = this.transform.rotation.eulerAngles;
+			this.target = this.startStable;
 		}
 		else
 		{
-			targetPosition = tile.transform.position;
-			targetRotation = tile.transform.rotation.eulerAngles;
+			this.target = target.transform;
 		}
 		velocityPosition = Vector3.zero;
 		velocityRotation = 0f;
-		currentTile = tile;
+		currentTile = target;
 	}
 }
