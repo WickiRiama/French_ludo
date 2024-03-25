@@ -4,7 +4,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class BlueHorse : MonoBehaviour
+public class Horse : MonoBehaviour
 {
 	// First tile of pathway
 	public Tile startingTile;
@@ -43,7 +43,7 @@ public class BlueHorse : MonoBehaviour
 			if (Vector3.Distance(this.transform.position, target.position) > 0.05f)
 			{
 				this.transform.position = Vector3.SmoothDamp(this.transform.position, target.position, ref velocityPosition, smoothTime);
-				float angleY = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, target.rotation.y, ref velocityRotation, smoothTime);
+				float angleY = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, target.eulerAngles.y, ref velocityRotation, smoothTime);
 				this.transform.rotation = Quaternion.Euler(0, angleY, 0);
 			}
 			// Arrived at target
