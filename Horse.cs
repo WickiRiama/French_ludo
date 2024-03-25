@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,6 +59,14 @@ public class Horse : MonoBehaviour
 				// Arrived at the end of the path
 				else
 				{
+					if (TryGetComponent(out Variables id))
+					{
+						Debug.Log("Id " + id.declarations["Owner"]);
+					}
+					else
+					{
+						Debug.Log("Nope");
+					}
 					isMoving = false;
 					stateManager.isDoneMoving = true;
 				}
