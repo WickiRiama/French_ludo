@@ -10,7 +10,7 @@ public class StateManager : MonoBehaviour
 	public bool isDoneReturningStable;
 
 	public int diceValue;
-	public int currentPlayer;
+	public PlayerId currentPlayer;
 	int nbPlayers = 4;
 
 	// Start is called before the first frame update
@@ -22,7 +22,7 @@ public class StateManager : MonoBehaviour
 		isDoneReturningStable = true;
 
 		diceValue = 0;
-		currentPlayer = 0;
+		currentPlayer = PlayerId.BLUE;
 	}
 
 	// Update is called once per frame
@@ -41,6 +41,6 @@ public class StateManager : MonoBehaviour
 		isDoneMoving = false;
 		isDoneReturningStable = true;
 
-		currentPlayer = (currentPlayer + 1) % nbPlayers;
+		currentPlayer = (PlayerId)(((int)currentPlayer + 1) % nbPlayers);
 	}
 }

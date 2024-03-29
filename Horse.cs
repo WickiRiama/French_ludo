@@ -17,6 +17,7 @@ public class Horse : MonoBehaviour
 
 	// Start
 	Transform startStable;
+	PlayerId owner;
 
 	// Move
 	Transform target;
@@ -33,6 +34,7 @@ public class Horse : MonoBehaviour
 		stateManager = GameObject.FindObjectOfType<StateManager>();
 		isMoving = false;
 		startStable = this.transform;
+		owner = (PlayerId)GetComponent<Variables>().declarations["Owner"];
 		setTarget(null);
 	}
 
@@ -59,14 +61,6 @@ public class Horse : MonoBehaviour
 				// Arrived at the end of the path
 				else
 				{
-					if (TryGetComponent(out Variables id))
-					{
-						Debug.Log("Id " + id.declarations["Owner"]);
-					}
-					else
-					{
-						Debug.Log("Nope");
-					}
 					isMoving = false;
 					stateManager.isDoneMoving = true;
 				}
@@ -77,7 +71,7 @@ public class Horse : MonoBehaviour
 	void OnMouseUp()
 	{
 		// The dice has been rolled, and no other hosre has been selected
-		if (stateManager.isDoneRolling && !stateManager.isDoneClicking)
+		if (stateManager.isDoneRolling && !stateManager.isDoneClicking && stateManager.currentPlayer == owner)
 		{
 			stateManager.isDoneClicking = true;
 			CreatePath();
