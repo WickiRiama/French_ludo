@@ -7,17 +7,18 @@ using UnityEngine;
 
 public class Horse : MonoBehaviour
 {
-	// First tile of pathway
-	public Tile startingTile;
-
 	// State
 	StateManager stateManager;
+	public bool isDoneCheckingPath;
+	public bool canMove;
 	bool isMoving;
+	bool isReturningHome;
 	Tile currentTile;
 
 	// Start
-	Transform startStable;
-	PlayerId owner;
+	public Tile startingTile;
+	public StableTile startStable;
+	public PlayerId owner;
 
 	// Move
 	Transform target;
@@ -32,10 +33,13 @@ public class Horse : MonoBehaviour
 	void Start()
 	{
 		stateManager = GameObject.FindObjectOfType<StateManager>();
+		canMove = false;
+		isDoneCheckingPath = false;
 		isMoving = false;
-		startStable = this.transform;
+		isReturningHome = false;
 		owner = (PlayerId)GetComponent<Variables>().declarations["Owner"];
-		setTarget(null);
+		SetTarget(null);
+		this.transform.SetPositionAndRotation(startStable.transform.position, startStable.transform.rotation);
 	}
 
 	void Update()
@@ -45,9 +49,7 @@ public class Horse : MonoBehaviour
 			// Not arrived yet
 			if (Vector3.Distance(this.transform.position, target.position) > 0.05f)
 			{
-				this.transform.position = Vector3.SmoothDamp(this.transform.position, target.position, ref velocityPosition, smoothTime);
-				float angleY = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, target.eulerAngles.y, ref velocityRotation, smoothTime);
-				this.transform.rotation = Quaternion.Euler(0, angleY, 0);
+				MoveTo(target);
 			}
 			// Arrived at target
 			else
@@ -55,15 +57,44 @@ public class Horse : MonoBehaviour
 				// Go to next target in the path
 				if (path != null && pathIndex < path.Length)
 				{
-					setTarget(path[pathIndex]);
+					SetTarget(path[pathIndex]);
+					if (path[pathIndex].currentHorse)
+					{
+						path[pathIndex].currentHorse.ReturnHome();
+					}
 					pathIndex++;
 				}
 				// Arrived at the end of the path
 				else
 				{
 					isMoving = false;
+					canMove = false;
+					if (this.currentTile)
+					{
+						this.currentTile.currentHorse = this;
+					}
 					stateManager.isDoneMoving = true;
 				}
+			}
+		}
+		else if (stateManager.isDoneRolling && stateManager.currentPlayer == this.owner && !isDoneCheckingPath)
+		{
+			CreatePath();
+			isDoneCheckingPath = true;
+		}
+		else if (isReturningHome)
+		{
+			if (Vector3.Distance(this.transform.position, target.position) > 0.05f)
+			{
+				MoveTo(target);
+				Debug.Log("In my way to home");
+			}
+			// Arrived at target
+			else
+			{
+				Debug.Log("Arrived Home");
+				isReturningHome = false;
+				stateManager.isDoneReturningStable = true;
 			}
 		}
 	}
@@ -71,10 +102,13 @@ public class Horse : MonoBehaviour
 	void OnMouseUp()
 	{
 		// The dice has been rolled, and no other hosre has been selected
-		if (stateManager.isDoneRolling && !stateManager.isDoneClicking && stateManager.currentPlayer == owner)
+		if (isDoneCheckingPath && !stateManager.isDoneClicking && stateManager.currentPlayer == owner && canMove)
 		{
 			stateManager.isDoneClicking = true;
-			CreatePath();
+			if (this.currentTile)
+			{
+				this.currentTile.currentHorse = null;
+			}
 			this.isMoving = true;
 		}
 	}
@@ -82,29 +116,37 @@ public class Horse : MonoBehaviour
 	private void CreatePath()
 	{
 		int nbMoves = stateManager.diceValue + 1;
-		Tile targetTile = currentTile;
-		path = new Tile[nbMoves];
 		pathIndex = 0;
+		Tile targetTile = currentTile;
+		if (!targetTile)
+		{
+			if (nbMoves == 6)
+			{
+				path = new Tile[1];
+				path[0] = startingTile;
+				canMove = true;
+			}
+			return;
+		}
 
+		path = new Tile[nbMoves];
 		for (int i = 0; i < nbMoves; i++)
 		{
-			if (!targetTile)
+			targetTile = targetTile.nextTiles[0];
+			if (!CanMoveTo(targetTile, i == nbMoves - 1))
 			{
-				targetTile = startingTile;
-			}
-			else
-			{
-				targetTile = targetTile.nextTiles[0];
+				return;
 			}
 			path[i] = targetTile;
 		}
+		canMove = true;
 	}
 
-	void setTarget(Tile target)
+	void SetTarget(Tile target)
 	{
 		if (target == null)
 		{
-			this.target = this.startStable;
+			this.target = this.startStable.transform;
 		}
 		else
 		{
@@ -113,5 +155,35 @@ public class Horse : MonoBehaviour
 		velocityPosition = Vector3.zero;
 		velocityRotation = 0f;
 		currentTile = target;
+	}
+
+	void MoveTo(Transform goal)
+	{
+		this.transform.position = Vector3.SmoothDamp(this.transform.position, goal.position, ref velocityPosition, smoothTime);
+		float angleY = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, goal.eulerAngles.y, ref velocityRotation, smoothTime);
+		this.transform.rotation = Quaternion.Euler(0, angleY, 0);
+	}
+
+	bool CanMoveTo(Tile tile, bool isLast)
+	{
+		if (!tile.currentHorse)
+		{
+			return true;
+		}
+		else if (isLast && tile.currentHorse.owner != this.owner)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public void ReturnHome()
+	{
+		stateManager.isDoneReturningStable = false;
+		SetTarget(null);
+		this.isReturningHome = true;
 	}
 }

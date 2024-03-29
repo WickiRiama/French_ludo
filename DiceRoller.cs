@@ -23,7 +23,7 @@ public class DiceRoller : MonoBehaviour
 
 	public void RollTheDice()
 	{
-		if (!stateManager.isDoneRolling)
+		if (stateManager.isDoneChangingPlayer && !stateManager.isDoneRolling)
 		{
 			int value = Random.Range(0, 6);
 			this.GetComponent<Image>().sprite = faces[value];

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Tile : MonoBehaviour
 {
 	public Tile[] nextTiles;
+	public Horse currentHorse;
 
 	// Start is called before the first frame update
 	void Start()
