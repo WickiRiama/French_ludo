@@ -37,36 +37,17 @@ public class StateManager : MonoBehaviour
 		{
 			if (!isDoneCheckingPath)
 			{
+				CheckLegalPath();
 				isDoneCheckingPath = true;
-				for (int i = 0; i < 16; i++)
-				{
-					if (horses[i].owner == currentPlayer && !horses[i].isDoneCheckingPath)
-					{
-						isDoneCheckingPath = false;
-						break;
-					}
-				}
-				int canMoves = 0;
-				for (int i = 0; i < 16; i++)
-				{
-					if (horses[i].owner == currentPlayer && horses[i].canMove)
-					{
-						canMoves++;
-					}
-				}
-				if (canMoves == 0)
-				{
-					newTurn();
-				}
 			}
-			else if (isDoneClicking && isDoneMoving && isDoneReturningStable)
+			if (IsMoveImpossible() || (isDoneClicking && isDoneMoving && isDoneReturningStable))
 			{
-				newTurn();
+				NewTurn();
 			}
 		}
 	}
 
-	private void newTurn()
+	private void NewTurn()
 	{
 		isDoneChangingPlayer = false;
 		isDoneRolling = false;
@@ -77,7 +58,6 @@ public class StateManager : MonoBehaviour
 		for (int i = 0; i < 16; i++)
 		{
 			horses[i].canMove = false;
-			horses[i].isDoneCheckingPath = false;
 		}
 
 		//Replay in case of 6
@@ -86,4 +66,29 @@ public class StateManager : MonoBehaviour
 			currentPlayer = (PlayerId)(((int)currentPlayer + 1) % nbPlayers);
 		}
 	}
+
+	void CheckLegalPath()
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			if (horses[i].owner == currentPlayer)
+			{
+				horses[i].CreatePath();
+			}
+		}
+	}
+
+	bool IsMoveImpossible()
+	{
+		int canMove = 0;
+		for (int i = 0; i < 16; i++)
+		{
+			if (horses[i].owner == currentPlayer && horses[i].canMove)
+			{
+				canMove++;
+			}
+		}
+		return canMove == 0;
+	}
 }
+

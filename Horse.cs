@@ -9,7 +9,6 @@ public class Horse : MonoBehaviour
 {
 	// State
 	StateManager stateManager;
-	public bool isDoneCheckingPath;
 	public bool canMove;
 	bool isMoving;
 	bool isReturningHome;
@@ -34,7 +33,6 @@ public class Horse : MonoBehaviour
 	{
 		stateManager = GameObject.FindObjectOfType<StateManager>();
 		canMove = false;
-		isDoneCheckingPath = false;
 		isMoving = false;
 		isReturningHome = false;
 		owner = (PlayerId)GetComponent<Variables>().declarations["Owner"];
@@ -77,22 +75,15 @@ public class Horse : MonoBehaviour
 				}
 			}
 		}
-		else if (stateManager.isDoneRolling && stateManager.currentPlayer == this.owner && !isDoneCheckingPath)
-		{
-			CreatePath();
-			isDoneCheckingPath = true;
-		}
 		else if (isReturningHome)
 		{
 			if (Vector3.Distance(this.transform.position, target.position) > 0.05f)
 			{
 				MoveTo(target);
-				Debug.Log("In my way to home");
 			}
 			// Arrived at target
 			else
 			{
-				Debug.Log("Arrived Home");
 				isReturningHome = false;
 				stateManager.isDoneReturningStable = true;
 			}
@@ -102,7 +93,7 @@ public class Horse : MonoBehaviour
 	void OnMouseUp()
 	{
 		// The dice has been rolled, and no other hosre has been selected
-		if (isDoneCheckingPath && !stateManager.isDoneClicking && stateManager.currentPlayer == owner && canMove)
+		if (stateManager.isDoneCheckingPath && !stateManager.isDoneClicking && stateManager.currentPlayer == owner && canMove)
 		{
 			stateManager.isDoneClicking = true;
 			if (this.currentTile)
@@ -113,7 +104,7 @@ public class Horse : MonoBehaviour
 		}
 	}
 
-	private void CreatePath()
+	public void CreatePath()
 	{
 		int nbMoves = stateManager.diceValue + 1;
 		pathIndex = 0;
