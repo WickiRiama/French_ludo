@@ -41,9 +41,10 @@ public class StateManager : MonoBehaviour
 			if (!isDoneCheckingPath)
 			{
 				CheckLegalPath();
+				IsMoveImpossible();
 				isDoneCheckingPath = true;
 			}
-			if (IsMoveImpossible() || (isDoneClicking && isDoneMoving && isDoneReturningStable))
+			if (isDoneClicking && isDoneMoving && isDoneReturningStable)
 			{
 				NewTurn();
 			}
@@ -82,7 +83,7 @@ public class StateManager : MonoBehaviour
 		}
 	}
 
-	bool IsMoveImpossible()
+	void IsMoveImpossible()
 	{
 		int canMove = 0;
 		for (int i = 0; i < 16; i++)
@@ -92,7 +93,16 @@ public class StateManager : MonoBehaviour
 				canMove++;
 			}
 		}
-		return canMove == 0;
+		if (canMove == 0)
+		{
+			StartCoroutine(MoveImpossibleCoroutine());
+		}
+	}
+
+	IEnumerator MoveImpossibleCoroutine()
+	{
+		yield return new WaitForSeconds(1f);
+		NewTurn();
 	}
 }
 
