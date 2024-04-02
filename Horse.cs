@@ -13,6 +13,7 @@ public class Horse : MonoBehaviour
 	bool isMoving;
 	bool isReturningHome;
 	Tile currentTile;
+	public Outline outline;
 
 	// Start
 	public Tile startingTile;
@@ -38,6 +39,11 @@ public class Horse : MonoBehaviour
 		owner = (PlayerId)GetComponent<Variables>().declarations["Owner"];
 		SetTarget(null);
 		this.transform.SetPositionAndRotation(startStable.transform.position, startStable.transform.rotation);
+		outline = GetComponent<Outline>();
+		outline.OutlineMode = Outline.Mode.OutlineAll;
+		outline.OutlineColor = Color.green;
+		outline.OutlineWidth = 5f;
+		outline.enabled = false;
 	}
 
 	void Update()
@@ -53,7 +59,7 @@ public class Horse : MonoBehaviour
 			else
 			{
 				// Go to next target in the path
-				if (path != null && pathIndex < path.Length)
+				if (path != null && pathIndex < path.Length && path[pathIndex] != null)
 				{
 					SetTarget(path[pathIndex]);
 					if (path[pathIndex].currentHorse)
@@ -96,6 +102,7 @@ public class Horse : MonoBehaviour
 		if (stateManager.isDoneCheckingPath && !stateManager.isDoneClicking && stateManager.currentPlayer == owner && canMove)
 		{
 			stateManager.isDoneClicking = true;
+			stateManager.DisableOutline();
 			if (this.currentTile)
 			{
 				this.currentTile.currentHorse = null;
@@ -106,30 +113,40 @@ public class Horse : MonoBehaviour
 
 	public void CreatePath()
 	{
-		int nbMoves = stateManager.diceValue;
+		int nbMoves;
 		pathIndex = 0;
-		Tile targetTile = currentTile;
-		if (!targetTile)
+		Tile targetTile;
+
+		if (!currentTile)
 		{
-			if (nbMoves == 6)
+			if (stateManager.diceValue != 6)
 			{
-				path = new Tile[1];
-				path[0] = startingTile;
-				canMove = true;
+				return ;
 			}
-			return;
+			nbMoves = 1;
+			targetTile = startingTile;
+		}
+		else
+		{
+			nbMoves = stateManager.diceValue;
+			targetTile = currentTile.GetNextTile(this);
 		}
 
 		path = new Tile[nbMoves];
 		for (int i = 0; i < nbMoves; i++)
 		{
-			targetTile = targetTile.nextTiles[0];
-			if (!CanMoveTo(targetTile, i == nbMoves - 1))
+			if (targetTile == null || !targetTile.CanComeHere(this, i == nbMoves - 1))
 			{
-				return;
+				return ;
 			}
 			path[i] = targetTile;
+			if (targetTile.isStair)
+			{
+				break ;
+			}
+			targetTile = targetTile.GetNextTile(this);
 		}
+		outline.enabled = true;
 		canMove = true;
 	}
 

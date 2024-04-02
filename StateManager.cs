@@ -8,6 +8,7 @@ public class StateManager : MonoBehaviour
 	public bool isDoneChangingPlayer;
 	public bool isDoneRolling;
 	public bool isDoneCheckingPath;
+	public bool isOutlineOn;
 	public bool isDoneClicking;
 	public bool isDoneMoving;
 	public bool isDoneReturningStable;
@@ -24,6 +25,7 @@ public class StateManager : MonoBehaviour
 		isDoneChangingPlayer = false;
 		isDoneRolling = false;
 		isDoneCheckingPath = false;
+		isOutlineOn = false;
 		isDoneClicking = false;
 		isDoneMoving = false;
 		isDoneReturningStable = true;
@@ -103,6 +105,17 @@ public class StateManager : MonoBehaviour
 	{
 		yield return new WaitForSeconds(1f);
 		NewTurn();
+	}
+
+	public void DisableOutline()
+	{
+		for (int i = 0; i < 16; i++)
+		{
+			if (horses[i].owner == currentPlayer)
+			{
+				horses[i].outline.enabled = false;
+			}
+		}
 	}
 }
 

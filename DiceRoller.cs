@@ -27,6 +27,7 @@ public class DiceRoller : MonoBehaviour
 		if (stateManager.isDoneChangingPlayer && !stateManager.isDoneRolling)
 		{
 			int value = Random.Range(1, 7);
+			// int value = 6;
 			this.GetComponent<Image>().sprite = faces[value];
 			stateManager.diceValue = value;
 			stateManager.isDoneRolling = true;
