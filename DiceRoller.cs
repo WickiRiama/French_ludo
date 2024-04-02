@@ -13,6 +13,7 @@ public class DiceRoller : MonoBehaviour
 	void Start()
 	{
 		stateManager = GameObject.FindObjectOfType<StateManager>();
+		ResetDice();
 	}
 
 	// Update is called once per frame
@@ -25,10 +26,16 @@ public class DiceRoller : MonoBehaviour
 	{
 		if (stateManager.isDoneChangingPlayer && !stateManager.isDoneRolling)
 		{
-			int value = Random.Range(0, 6);
+			int value = Random.Range(1, 7);
 			this.GetComponent<Image>().sprite = faces[value];
 			stateManager.diceValue = value;
 			stateManager.isDoneRolling = true;
 		}
+	}
+
+	public void ResetDice()
+	{
+		this.GetComponent<Image>().sprite = faces[0];
+		stateManager.diceValue = 0;
 	}
 }

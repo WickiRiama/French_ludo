@@ -106,7 +106,7 @@ public class Horse : MonoBehaviour
 
 	public void CreatePath()
 	{
-		int nbMoves = stateManager.diceValue + 1;
+		int nbMoves = stateManager.diceValue;
 		pathIndex = 0;
 		Tile targetTile = currentTile;
 		if (!targetTile)

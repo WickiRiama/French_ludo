@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 public class StateManager : MonoBehaviour
@@ -15,6 +16,7 @@ public class StateManager : MonoBehaviour
 	public PlayerId currentPlayer;
 	int nbPlayers = 4;
 	public Horse[] horses;
+	DiceRoller dice;
 
 	// Start is called before the first frame update
 	void Start()
@@ -28,6 +30,7 @@ public class StateManager : MonoBehaviour
 
 		diceValue = 0;
 		currentPlayer = PlayerId.BLUE;
+		dice = FindObjectOfType<DiceRoller>();
 	}
 
 	// Update is called once per frame
@@ -61,10 +64,11 @@ public class StateManager : MonoBehaviour
 		}
 
 		//Replay in case of 6
-		if (diceValue != 5)
+		if (diceValue != 6)
 		{
 			currentPlayer = (PlayerId)(((int)currentPlayer + 1) % nbPlayers);
 		}
+		dice.ResetDice();
 	}
 
 	void CheckLegalPath()
