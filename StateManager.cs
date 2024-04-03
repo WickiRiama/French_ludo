@@ -16,6 +16,7 @@ public class StateManager : MonoBehaviour
 	public int diceValue;
 	public PlayerId currentPlayer;
 	int nbPlayers = 4;
+	PlayerAI[] isAIPlayer;
 	public Horse[] horses;
 	DiceRoller dice;
 
@@ -33,22 +34,40 @@ public class StateManager : MonoBehaviour
 		diceValue = 0;
 		currentPlayer = PlayerId.BLUE;
 		dice = FindObjectOfType<DiceRoller>();
+		isAIPlayer = new PlayerAI[nbPlayers];
+		isAIPlayer[0] = null;
+		isAIPlayer[1] = new PlayerAI();
+		isAIPlayer[2] = new PlayerAI();
+		isAIPlayer[3] = new PlayerAI();
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		if (isDoneChangingPlayer && isDoneRolling)
+		if (isAIPlayer[(int)currentPlayer] != null)
+		{
+			if (isDoneChangingPlayer)
+			{
+				isAIPlayer[(int)currentPlayer].PlayTurn();
+			}
+		}
+		else if (isDoneChangingPlayer && isDoneRolling)
 		{
 			if (!isDoneCheckingPath)
 			{
 				CheckLegalPath();
 				IsMoveImpossible();
-				isDoneCheckingPath = true;
 			}
-			if (isDoneClicking && isDoneMoving && isDoneReturningStable)
+			if (isDoneChangingPlayer && isDoneRolling && isDoneCheckingPath && isDoneClicking && isDoneMoving && isDoneReturningStable)
 			{
-				NewTurn();
+				if (isAIPlayer[(int)currentPlayer] != null)
+				{
+					PauseAI();
+				}
+				else
+				{
+					NewTurn();
+				}
 			}
 		}
 	}
@@ -74,7 +93,7 @@ public class StateManager : MonoBehaviour
 		dice.ResetDice();
 	}
 
-	void CheckLegalPath()
+	public void CheckLegalPath()
 	{
 		for (int i = 0; i < 16; i++)
 		{
@@ -83,9 +102,10 @@ public class StateManager : MonoBehaviour
 				horses[i].CreatePath();
 			}
 		}
+		isDoneCheckingPath = true;
 	}
 
-	void IsMoveImpossible()
+	public void IsMoveImpossible()
 	{
 		int canMove = 0;
 		for (int i = 0; i < 16; i++)
@@ -101,9 +121,20 @@ public class StateManager : MonoBehaviour
 		}
 	}
 
+	public void PauseAI()
+	{
+		StartCoroutine(PlayerAIPauseCoroutine());
+	}
+
 	IEnumerator MoveImpossibleCoroutine()
 	{
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(2f);
+		NewTurn();
+	}
+
+	IEnumerator PlayerAIPauseCoroutine()
+	{
+		yield return new WaitForSeconds(5f);
 		NewTurn();
 	}
 

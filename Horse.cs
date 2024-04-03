@@ -101,14 +101,19 @@ public class Horse : MonoBehaviour
 		// The dice has been rolled, and no other hosre has been selected
 		if (stateManager.isDoneCheckingPath && !stateManager.isDoneClicking && stateManager.currentPlayer == owner && canMove)
 		{
-			stateManager.isDoneClicking = true;
-			stateManager.DisableOutline();
-			if (this.currentTile)
-			{
-				this.currentTile.currentHorse = null;
-			}
-			this.isMoving = true;
+			DoTheMove();
 		}
+	}
+
+	public void DoTheMove()
+	{
+		stateManager.isDoneClicking = true;
+		stateManager.DisableOutline();
+		if (this.currentTile)
+		{
+			this.currentTile.currentHorse = null;
+		}
+		this.isMoving = true;
 	}
 
 	public void CreatePath()
@@ -121,7 +126,7 @@ public class Horse : MonoBehaviour
 		{
 			if (stateManager.diceValue != 6)
 			{
-				return ;
+				return;
 			}
 			nbMoves = 1;
 			targetTile = startingTile;
@@ -137,12 +142,12 @@ public class Horse : MonoBehaviour
 		{
 			if (targetTile == null || !targetTile.CanComeHere(this, i == nbMoves - 1))
 			{
-				return ;
+				return;
 			}
 			path[i] = targetTile;
 			if (targetTile.isStair)
 			{
-				break ;
+				break;
 			}
 			targetTile = targetTile.GetNextTile(this);
 		}
