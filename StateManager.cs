@@ -19,11 +19,12 @@ public class StateManager : MonoBehaviour
 	PlayerAI[] isAIPlayer;
 	public Horse[] horses;
 	DiceRoller dice;
+	CameraPivot cameraPivot;
 
 	// Start is called before the first frame update
 	void Start()
 	{
-		isDoneChangingPlayer = false;
+		isDoneChangingPlayer = true;
 		isDoneRolling = false;
 		isDoneCheckingPath = false;
 		isOutlineOn = false;
@@ -34,6 +35,7 @@ public class StateManager : MonoBehaviour
 		diceValue = 0;
 		currentPlayer = PlayerId.BLUE;
 		dice = FindObjectOfType<DiceRoller>();
+		cameraPivot = FindObjectOfType<CameraPivot>();
 		isAIPlayer = new PlayerAI[nbPlayers];
 		isAIPlayer[0] = null;
 		isAIPlayer[1] = new PlayerAI();
@@ -90,6 +92,7 @@ public class StateManager : MonoBehaviour
 		{
 			currentPlayer = (PlayerId)(((int)currentPlayer + 1) % nbPlayers);
 		}
+		cameraPivot.MoveCamera();
 		dice.ResetDice();
 	}
 

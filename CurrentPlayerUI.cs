@@ -21,7 +21,6 @@ public class CuurentPlayerUI : MonoBehaviour
 		if (!stateManager.isDoneChangingPlayer)
 		{
 			rend.material = materials[(int)stateManager.currentPlayer];
-			stateManager.isDoneChangingPlayer = true;
 		}
 	}
 }
