@@ -62,20 +62,14 @@ public class StateManager : MonoBehaviour
 			}
 			if (isDoneChangingPlayer && isDoneRolling && isDoneCheckingPath && isDoneClicking && isDoneMoving && isDoneReturningStable)
 			{
-				if (isAIPlayer[(int)currentPlayer] != null)
-				{
-					PauseAI();
-				}
-				else
-				{
 					NewTurn();
-				}
 			}
 		}
 	}
 
-	private void NewTurn()
+	public void NewTurn()
 	{
+		Debug.Log("new turn");
 		isDoneChangingPlayer = false;
 		isDoneRolling = false;
 		isDoneCheckingPath = false;
@@ -86,7 +80,10 @@ public class StateManager : MonoBehaviour
 		{
 			horses[i].canMove = false;
 		}
-
+		if (isAIPlayer[(int)currentPlayer] != null)
+		{
+			isAIPlayer[(int)currentPlayer].ResetPlayer();
+		}
 		//Replay in case of 6
 		if (diceValue != 6)
 		{
@@ -131,14 +128,14 @@ public class StateManager : MonoBehaviour
 
 	IEnumerator MoveImpossibleCoroutine()
 	{
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(1f);
 		NewTurn();
 	}
 
 	IEnumerator PlayerAIPauseCoroutine()
 	{
-		yield return new WaitForSeconds(5f);
-		NewTurn();
+		yield return new WaitForSeconds(1f);
+		isAIPlayer[(int)currentPlayer].isDonePausing = true;
 	}
 
 	public void DisableOutline()

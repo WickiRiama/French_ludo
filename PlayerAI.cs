@@ -6,11 +6,15 @@ public class PlayerAI
 {
 	StateManager stateManager;
 	DiceRoller diceRoller;
+	public bool isDonePausing;
+	bool isPausing;
 
 	public PlayerAI()
 	{
 		stateManager = GameObject.FindObjectOfType<StateManager>();
 		diceRoller = GameObject.FindObjectOfType<DiceRoller>();
+		isDonePausing = false;
+		isDonePausing = false;
 	}
 
 	public void PlayTurn()
@@ -32,6 +36,17 @@ public class PlayerAI
 			{
 				ChooseHorse();
 				stateManager.isDoneClicking = true;
+				return;
+			}
+			if (stateManager.isDoneMoving && !isPausing && !isDonePausing)
+			{
+				isPausing = true;
+				stateManager.PauseAI();
+				return;
+			}
+			if (isDonePausing)
+			{
+				stateManager.NewTurn();
 				return;
 			}
 		}
@@ -64,5 +79,11 @@ public class PlayerAI
 			return ;
 		}
 		movableHorses[Random.Range(0, movableHorses.Length)].DoTheMove();
+	}
+
+	public void ResetPlayer()
+	{
+		isPausing = false;
+		isDonePausing = false;
 	}
 }

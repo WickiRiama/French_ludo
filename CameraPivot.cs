@@ -24,16 +24,13 @@ public class CameraPivot : MonoBehaviour
 	{
 		if (isMoving)
 		{
-			Debug.Log("isMoving " + isMoving.ToString());
 			theAngle = Mathf.SmoothDampAngle(this.transform.rotation.eulerAngles.y, pivotAngle*((int)stateManager.currentPlayer), ref angleVelocity, 0.25f);
 			this.transform.rotation = Quaternion.Euler(new Vector3(0, theAngle, 0));
 
-			Debug.Log("Diff " + Math.Abs(this.transform.rotation.eulerAngles.y - pivotAngle*((int)stateManager.currentPlayer)));
 			if (Math.Abs(this.transform.rotation.eulerAngles.y - pivotAngle*((int)stateManager.currentPlayer)) < 0.5f)
 			{
 				stateManager.isDoneChangingPlayer = true;
 				isMoving = false;
-				Debug.Log("Stop Moving");
 			}
 		}
 	}
