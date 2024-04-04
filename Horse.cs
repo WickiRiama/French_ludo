@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Horse : MonoBehaviour
 {
@@ -21,7 +22,8 @@ public class Horse : MonoBehaviour
 	public PlayerId owner;
 
 	// Move
-	Transform target;
+	Vector3 targetPosition;
+	Quaternion targetRotation;
 	Tile[] path;
 	int pathIndex = 0;
 
@@ -51,9 +53,9 @@ public class Horse : MonoBehaviour
 		if (isMoving)
 		{
 			// Not arrived yet
-			if (Vector3.Distance(this.transform.position, target.position) > 0.05f)
+			if (Vector3.Distance(this.transform.position, targetPosition) > 0.05f)
 			{
-				MoveTo(target);
+				MoveTo(targetPosition, targetRotation);
 			}
 			// Arrived at target
 			else
@@ -83,9 +85,9 @@ public class Horse : MonoBehaviour
 		}
 		else if (isReturningHome)
 		{
-			if (Vector3.Distance(this.transform.position, target.position) > 0.05f)
+			if (Vector3.Distance(this.transform.position, targetPosition) > 0.05f)
 			{
-				MoveTo(target);
+				MoveTo(targetPosition, targetRotation);
 			}
 			// Arrived at target
 			else
@@ -159,21 +161,31 @@ public class Horse : MonoBehaviour
 	{
 		if (target == null)
 		{
-			this.target = this.startStable.transform;
+			this.targetPosition = this.startStable.transform.position;
+			this.targetRotation = this.startStable.transform.rotation;
 		}
 		else
 		{
-			this.target = target.transform;
+			this.targetPosition = target.transform.position;
+			Tile nextTile = target.GetNextTile(this);
+			if (target.isStair || nextTile == null)
+			{
+				this.targetRotation = target.transform.rotation;
+			}
+			else
+			{
+				this.targetRotation = nextTile.transform.rotation;
+			}
 		}
 		velocityPosition = Vector3.zero;
 		velocityRotation = 0f;
 		currentTile = target;
 	}
 
-	void MoveTo(Transform goal)
+	void MoveTo(Vector3 goalPosition, Quaternion goalRotation)
 	{
-		this.transform.position = Vector3.SmoothDamp(this.transform.position, goal.position, ref velocityPosition, smoothTime);
-		float angleY = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, goal.eulerAngles.y, ref velocityRotation, smoothTime);
+		this.transform.position = Vector3.SmoothDamp(this.transform.position, goalPosition, ref velocityPosition, smoothTime);
+		float angleY = Mathf.SmoothDampAngle(this.transform.eulerAngles.y, goalRotation.eulerAngles.y, ref velocityRotation, smoothTime);
 		this.transform.rotation = Quaternion.Euler(0, angleY, 0);
 	}
 
