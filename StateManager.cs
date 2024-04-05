@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
+// using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 public class StateManager : MonoBehaviour
@@ -17,6 +17,7 @@ public class StateManager : MonoBehaviour
 	public PlayerId currentPlayer;
 	int nbPlayers = 4;
 	PlayerAI[] isAIPlayer;
+	public int[] score;
 	public Horse[] horses;
 	DiceRoller dice;
 	CameraPivot cameraPivot;
@@ -41,6 +42,7 @@ public class StateManager : MonoBehaviour
 		isAIPlayer[1] = new PlayerAI();
 		isAIPlayer[2] = new PlayerAI();
 		isAIPlayer[3] = new PlayerAI();
+		score = new int[nbPlayers];
 	}
 
 	// Update is called once per frame
@@ -69,7 +71,14 @@ public class StateManager : MonoBehaviour
 
 	public void NewTurn()
 	{
-		Debug.Log("new turn");
+		
+		PlayerId winner = WhoWins();
+		if (winner != PlayerId.NONE)
+		{
+			Debug.Log(winner.ToString() + " has won !!!");
+			return ;
+		}
+
 		isDoneChangingPlayer = false;
 		isDoneRolling = false;
 		isDoneCheckingPath = false;
@@ -147,6 +156,18 @@ public class StateManager : MonoBehaviour
 				horses[i].outline.enabled = false;
 			}
 		}
+	}
+
+	PlayerId WhoWins()
+	{
+		for (int i = 0; i < this.score.Length; i++)
+		{
+			if (score[i] == 4)
+			{
+				return (PlayerId) i;
+			}
+		}
+		return PlayerId.NONE;
 	}
 }
 

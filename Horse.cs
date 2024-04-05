@@ -78,6 +78,10 @@ public class Horse : MonoBehaviour
 					if (this.currentTile)
 					{
 						this.currentTile.currentHorse = this;
+						if (this.currentTile.GetNextTile(this) == null)
+						{
+							stateManager.score[(int)this.owner] += 1;
+						}
 					}
 					stateManager.isDoneMoving = true;
 				}
