@@ -16,11 +16,12 @@ public class StateManager : MonoBehaviour
 	public int diceValue;
 	public PlayerId currentPlayer;
 	int nbPlayers = 4;
-	PlayerAI[] isAIPlayer;
+	public PlayerAI[] players;
 	public int[] score;
 	public Horse[] horses;
 	DiceRoller dice;
 	CameraPivot cameraPivot;
+	// StartMenu menu;
 
 	// Start is called before the first frame update
 	void Start()
@@ -37,22 +38,26 @@ public class StateManager : MonoBehaviour
 		currentPlayer = PlayerId.BLUE;
 		dice = FindObjectOfType<DiceRoller>();
 		cameraPivot = FindObjectOfType<CameraPivot>();
-		isAIPlayer = new PlayerAI[nbPlayers];
-		isAIPlayer[0] = null;
-		isAIPlayer[1] = new PlayerAI();
-		isAIPlayer[2] = new PlayerAI();
-		isAIPlayer[3] = new PlayerAI();
+		players = new PlayerAI[nbPlayers];
+		for (int i = 0; i < nbPlayers; i++)
+		{
+			if (StartMenu.menu.isAIPlayer[i])
+			{
+				players[i] = new PlayerAI();
+			}
+		}
+		
 		score = new int[nbPlayers];
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		if (isAIPlayer[(int)currentPlayer] != null)
+		if (StartMenu.menu.isAIPlayer[(int)currentPlayer])
 		{
 			if (isDoneChangingPlayer)
 			{
-				isAIPlayer[(int)currentPlayer].PlayTurn();
+				players[(int)currentPlayer].PlayTurn();
 			}
 		}
 		else if (isDoneChangingPlayer && isDoneRolling)
@@ -89,9 +94,9 @@ public class StateManager : MonoBehaviour
 		{
 			horses[i].canMove = false;
 		}
-		if (isAIPlayer[(int)currentPlayer] != null)
+		if (StartMenu.menu.isAIPlayer[(int)currentPlayer])
 		{
-			isAIPlayer[(int)currentPlayer].ResetPlayer();
+			players[(int)currentPlayer].ResetPlayer();
 		}
 		//Replay in case of 6
 		if (diceValue != 6)
@@ -144,7 +149,7 @@ public class StateManager : MonoBehaviour
 	IEnumerator PlayerAIPauseCoroutine()
 	{
 		yield return new WaitForSeconds(1f);
-		isAIPlayer[(int)currentPlayer].isDonePausing = true;
+		players[(int)currentPlayer].isDonePausing = true;
 	}
 
 	public void DisableOutline()
