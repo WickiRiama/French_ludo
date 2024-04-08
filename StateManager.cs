@@ -5,49 +5,39 @@ using UnityEngine;
 
 public class StateManager : MonoBehaviour
 {
+	public GameObject[] horsePrefabs;
+	public StableList[] stableTiles;
+	public Tile[] startingTiles;
+
 	public bool isDoneChangingPlayer;
 	public bool isDoneRolling;
 	public bool isDoneCheckingPath;
-	public bool isOutlineOn;
 	public bool isDoneClicking;
 	public bool isDoneMoving;
 	public bool isDoneReturningStable;
 
-	public int diceValue;
 	public PlayerId currentPlayer;
-	int nbPlayers = 4;
 	public PlayerAI[] players;
-	public int[] score;
 	public Horse[] horses;
 	DiceRoller dice;
+	public int diceValue;
 	CameraPivot cameraPivot;
-	// StartMenu menu;
+	public int[] score;
+
+	readonly int nbPlayers = 4;
 
 	// Start is called before the first frame update
 	void Start()
 	{
-		isDoneChangingPlayer = true;
-		isDoneRolling = false;
-		isDoneCheckingPath = false;
-		isOutlineOn = false;
-		isDoneClicking = false;
-		isDoneMoving = false;
-		isDoneReturningStable = true;
-
-		diceValue = 0;
-		currentPlayer = PlayerId.BLUE;
+		// InitializeTurn();
+		currentPlayer = FirstPlayer();
+		players = CreatePlayers();
+		horses = CreateHorses();
 		dice = FindObjectOfType<DiceRoller>();
+		// diceValue = 0;
 		cameraPivot = FindObjectOfType<CameraPivot>();
-		players = new PlayerAI[nbPlayers];
-		for (int i = 0; i < nbPlayers; i++)
-		{
-			if (StartMenu.menu.isAIPlayer[i])
-			{
-				players[i] = new PlayerAI();
-			}
-		}
-		
 		score = new int[nbPlayers];
+		NewTurn();
 	}
 
 	// Update is called once per frame
@@ -69,19 +59,66 @@ public class StateManager : MonoBehaviour
 			}
 			if (isDoneChangingPlayer && isDoneRolling && isDoneCheckingPath && isDoneClicking && isDoneMoving && isDoneReturningStable)
 			{
-					NewTurn();
+				NewTurn();
 			}
 		}
 	}
 
+	void InitializeTurn()
+	{
+		isDoneChangingPlayer = true;
+		isDoneRolling = false;
+		isDoneCheckingPath = false;
+		isDoneClicking = false;
+		isDoneMoving = false;
+		isDoneReturningStable = true;
+	}
+
+	PlayerId FirstPlayer()
+	{
+		int first = Random.Range(0, 4);
+		Debug.Log("Random Player is " + (PlayerId)first);
+		return (PlayerId)first;
+	}
+
+	PlayerAI[] CreatePlayers()
+	{
+		PlayerAI[] players = new PlayerAI[nbPlayers];
+		for (int i = 0; i < nbPlayers; i++)
+		{
+			if (StartMenu.menu.isAIPlayer[i])
+			{
+				players[i] = new PlayerAI();
+			}
+		}
+		return players;
+	}
+
+	Horse[] CreateHorses()
+	{
+		List<Horse> horses = new List<Horse>();
+		for (int color = 0; color < 4; color++)
+		{
+			for (int stable = 0; stable < StartMenu.menu.nbHorses; stable++)
+			{
+				GameObject horseObject = Instantiate(horsePrefabs[color], stableTiles[color].stableTiles[stable].GetTransform());
+				Horse horse = horseObject.GetComponent<Horse>();
+				horse.startingTile = startingTiles[color];
+				horse.startStable = stableTiles[color].stableTiles[stable];
+				horses.Add(horse);
+			}
+		}
+		return horses.ToArray();
+	}
+
 	public void NewTurn()
 	{
-		
+
 		PlayerId winner = WhoWins();
 		if (winner != PlayerId.NONE)
 		{
 			Debug.Log(winner.ToString() + " has won !!!");
-			return ;
+			return;
 		}
 
 		isDoneChangingPlayer = false;
@@ -90,7 +127,7 @@ public class StateManager : MonoBehaviour
 		isDoneClicking = false;
 		isDoneMoving = false;
 		isDoneReturningStable = true;
-		for (int i = 0; i < 16; i++)
+		for (int i = 0; i < horses.Length; i++)
 		{
 			horses[i].canMove = false;
 		}
@@ -105,11 +142,13 @@ public class StateManager : MonoBehaviour
 		}
 		cameraPivot.MoveCamera();
 		dice.ResetDice();
+		Debug.Log("Player is " + currentPlayer);
+
 	}
 
 	public void CheckLegalPath()
 	{
-		for (int i = 0; i < 16; i++)
+		for (int i = 0; i < horses.Length; i++)
 		{
 			if (horses[i].owner == currentPlayer)
 			{
@@ -122,7 +161,7 @@ public class StateManager : MonoBehaviour
 	public void IsMoveImpossible()
 	{
 		int canMove = 0;
-		for (int i = 0; i < 16; i++)
+		for (int i = 0; i < horses.Length; i++)
 		{
 			if (horses[i].owner == currentPlayer && horses[i].canMove)
 			{
@@ -154,7 +193,7 @@ public class StateManager : MonoBehaviour
 
 	public void DisableOutline()
 	{
-		for (int i = 0; i < 16; i++)
+		for (int i = 0; i < horses.Length; i++)
 		{
 			if (horses[i].owner == currentPlayer)
 			{
@@ -167,12 +206,18 @@ public class StateManager : MonoBehaviour
 	{
 		for (int i = 0; i < this.score.Length; i++)
 		{
-			if (score[i] == 4)
+			if (score[i] == StartMenu.menu.nbHorses)
 			{
-				return (PlayerId) i;
+				return (PlayerId)i;
 			}
 		}
 		return PlayerId.NONE;
 	}
 }
 
+[System.Serializable]
+public class StableList
+{
+	public StableTile[] stableTiles;
+
+}
