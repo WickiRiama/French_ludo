@@ -17,6 +17,7 @@ public class StateManager : MonoBehaviour
 	public bool isDoneReturningStable;
 
 	public PlayerId currentPlayer;
+	public PlayerId winner;
 	public PlayerAI[] players;
 	public Horse[] horses;
 	DiceRoller dice;
@@ -31,6 +32,7 @@ public class StateManager : MonoBehaviour
 	{
 		// InitializeTurn();
 		currentPlayer = FirstPlayer();
+		winner = PlayerId.NONE;
 		players = CreatePlayers();
 		horses = CreateHorses();
 		dice = FindObjectOfType<DiceRoller>();
@@ -114,7 +116,7 @@ public class StateManager : MonoBehaviour
 	public void NewTurn()
 	{
 
-		PlayerId winner = WhoWins();
+		winner = WhoWins();
 		if (winner != PlayerId.NONE)
 		{
 			Debug.Log(winner.ToString() + " has won !!!");
@@ -142,7 +144,6 @@ public class StateManager : MonoBehaviour
 		}
 		cameraPivot.MoveCamera();
 		dice.ResetDice();
-		Debug.Log("Player is " + currentPlayer);
 
 	}
 

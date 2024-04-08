@@ -16,7 +16,6 @@ public class CameraPivot : MonoBehaviour
 	void Start()
 	{
 		stateManager = FindFirstObjectByType<StateManager>();
-		// isMoving = false;
 	}
 
 	// Update is called once per frame

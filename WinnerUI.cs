@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CurrentPlayerUI : MonoBehaviour
+public class CuurentPlayerUI : MonoBehaviour
 {
 	public Material[] materials;
 	StateManager stateManager;
@@ -13,14 +13,14 @@ public class CurrentPlayerUI : MonoBehaviour
 	{
 		stateManager = FindObjectOfType<StateManager>();
 		rend = GetComponent<MeshRenderer>();
+		if (stateManager != null)
+		{
+			rend.material = materials[(int)stateManager.winner];
+		}
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		if (!stateManager.isDoneChangingPlayer)
-		{
-			rend.material = materials[(int)stateManager.currentPlayer];
-		}
 	}
 }
