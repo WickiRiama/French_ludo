@@ -1,50 +1,40 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using Unity.VisualScripting;
-using UnityEngine.Assertions.Must;
 
-public class StartMenu : MonoBehaviour
+public class MenuManager : MonoBehaviour
 {
 	int isPressed;
 	readonly Color[] colors = { Color.white, Color.gray };
-	public bool[] isAIPlayer;
-	public int nbHorses;
-	public static StartMenu menu;
 	public GameObject firstHorsenumberButton;
 	Button lastHorsesNumberButton;
-
-
-	private void Awake()
-	{
-		if (menu != null)
-		{
-			Destroy(gameObject);
-			return;
-		}
-
-		menu = this;
-		DontDestroyOnLoad(gameObject);
-	}
 
 	// Start is called before the first frame update
 	void Start()
 	{
-		isAIPlayer = new bool[4];
-		for (int i = 0; i < 4; i++)
+		if (GameManager.menu.winner != PlayerId.NONE)
 		{
-			isAIPlayer[i] = true;
+			this.gameObject.transform.GetChild(0).gameObject.SetActive(false);
+			this.gameObject.transform.GetChild(1).gameObject.SetActive(true);
+		}
+		else
+		{
+			this.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+			this.gameObject.transform.GetChild(1).gameObject.SetActive(false);
 		}
 		isPressed = 0;
-		nbHorses = 4;
 		lastHorsesNumberButton = firstHorsenumberButton.GetComponent<Button>();
 	}
 
+	// Update is called once per frame
+	void Update()
+	{
+		
+	}
 
-	public void PlayGame()
+		public void PlayGame()
 	{
 		SceneManager.LoadScene(1);
 	}
@@ -64,7 +54,7 @@ public class StartMenu : MonoBehaviour
 		isPressed = (isPressed + 1) % 2;
 		buttonObject.GetComponent<Variables>().declarations["isPressed"] = isPressed;
 		ApplyColor(colors[isPressed], button);
-		SetPlayer((PlayerId)buttonObject.GetComponent<Variables>().declarations["owner"], isPressed == 1);
+		GameManager.menu.SetPlayer((PlayerId)buttonObject.GetComponent<Variables>().declarations["owner"], isPressed == 1);
 	}
 
 	public void HorsesNumberClicked()
@@ -77,7 +67,7 @@ public class StartMenu : MonoBehaviour
 			ApplyColor(colors[1], button);
 			ApplyColor(colors[0], lastHorsesNumberButton);
 			lastHorsesNumberButton = button;
-			SetHorseNumber(int.Parse(buttonName.Split()[0]));
+			GameManager.menu.SetHorseNumber(int.Parse(buttonName.Split()[0]));
 		}
 	}
 
@@ -93,23 +83,5 @@ public class StartMenu : MonoBehaviour
 
 		button.colors = buttonColors;
 	}
-
-	void SetPlayer(PlayerId player, bool set)
-	{
-		if (set)
-		{
-			isAIPlayer[(int)player] = false;
-		}
-		else
-		{
-			isAIPlayer[(int)player] = true;
-		}
-	}
-
-	void SetHorseNumber(int number)
-	{
-		nbHorses = number;
-	}
-
 
 }

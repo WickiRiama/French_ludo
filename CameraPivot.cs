@@ -37,6 +37,5 @@ public class CameraPivot : MonoBehaviour
 	public void MoveCamera()
 	{
 		isMoving = true;
-		Debug.Log("Camera is moving");
 	}
 }

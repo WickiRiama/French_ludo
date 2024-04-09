@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-// using Microsoft.Unity.VisualStudio.Editor;
+using UnityEditor;
+
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class StateManager : MonoBehaviour
 {
@@ -17,7 +19,6 @@ public class StateManager : MonoBehaviour
 	public bool isDoneReturningStable;
 
 	public PlayerId currentPlayer;
-	public PlayerId winner;
 	public PlayerAI[] players;
 	public Horse[] horses;
 	DiceRoller dice;
@@ -32,11 +33,9 @@ public class StateManager : MonoBehaviour
 	{
 		// InitializeTurn();
 		currentPlayer = FirstPlayer();
-		winner = PlayerId.NONE;
 		players = CreatePlayers();
 		horses = CreateHorses();
 		dice = FindObjectOfType<DiceRoller>();
-		// diceValue = 0;
 		cameraPivot = FindObjectOfType<CameraPivot>();
 		score = new int[nbPlayers];
 		NewTurn();
@@ -45,7 +44,7 @@ public class StateManager : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-		if (StartMenu.menu.isAIPlayer[(int)currentPlayer])
+		if (GameManager.menu.isAIPlayer[(int)currentPlayer])
 		{
 			if (isDoneChangingPlayer)
 			{
@@ -66,20 +65,9 @@ public class StateManager : MonoBehaviour
 		}
 	}
 
-	void InitializeTurn()
-	{
-		isDoneChangingPlayer = true;
-		isDoneRolling = false;
-		isDoneCheckingPath = false;
-		isDoneClicking = false;
-		isDoneMoving = false;
-		isDoneReturningStable = true;
-	}
-
 	PlayerId FirstPlayer()
 	{
 		int first = Random.Range(0, 4);
-		Debug.Log("Random Player is " + (PlayerId)first);
 		return (PlayerId)first;
 	}
 
@@ -88,7 +76,7 @@ public class StateManager : MonoBehaviour
 		PlayerAI[] players = new PlayerAI[nbPlayers];
 		for (int i = 0; i < nbPlayers; i++)
 		{
-			if (StartMenu.menu.isAIPlayer[i])
+			if (GameManager.menu.isAIPlayer[i])
 			{
 				players[i] = new PlayerAI();
 			}
@@ -101,7 +89,7 @@ public class StateManager : MonoBehaviour
 		List<Horse> horses = new List<Horse>();
 		for (int color = 0; color < 4; color++)
 		{
-			for (int stable = 0; stable < StartMenu.menu.nbHorses; stable++)
+			for (int stable = 0; stable < GameManager.menu.nbHorses; stable++)
 			{
 				GameObject horseObject = Instantiate(horsePrefabs[color], stableTiles[color].stableTiles[stable].GetTransform());
 				Horse horse = horseObject.GetComponent<Horse>();
@@ -116,10 +104,10 @@ public class StateManager : MonoBehaviour
 	public void NewTurn()
 	{
 
-		winner = WhoWins();
-		if (winner != PlayerId.NONE)
+		GameManager.menu.winner = WhoWins();
+		if (GameManager.menu.winner != PlayerId.NONE)
 		{
-			Debug.Log(winner.ToString() + " has won !!!");
+			SceneManager.LoadScene(0);
 			return;
 		}
 
@@ -133,7 +121,7 @@ public class StateManager : MonoBehaviour
 		{
 			horses[i].canMove = false;
 		}
-		if (StartMenu.menu.isAIPlayer[(int)currentPlayer])
+		if (GameManager.menu.isAIPlayer[(int)currentPlayer])
 		{
 			players[(int)currentPlayer].ResetPlayer();
 		}
@@ -207,7 +195,7 @@ public class StateManager : MonoBehaviour
 	{
 		for (int i = 0; i < this.score.Length; i++)
 		{
-			if (score[i] == StartMenu.menu.nbHorses)
+			if (score[i] == GameManager.menu.nbHorses)
 			{
 				return (PlayerId)i;
 			}
