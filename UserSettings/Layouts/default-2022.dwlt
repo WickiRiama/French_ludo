@@ -315,7 +315,7 @@ MonoBehaviour:
       scrollPos: {x: 0, y: 0}
       m_SelectedIDs: 
       m_LastClickedID: 0
-      m_ExpandedIDs: 18faffff
+      m_ExpandedIDs: 8838feffc638feff4640feff2041feff0a42feff3248fefff248feffb24dfefff04dfeff7055feff4a56feff3857feff605dfeff205efeffb86cfeffe072feffa073feff6074feff8a74feff4a75feff727bfeff327cfeffc07ffefffe7ffeff7e87feff5888feff5889feff808ffeff4090feff0091feff2c91feffec91feff1498feffd498feff489dfeff70a3feff30a4fefff0a4feff1aa5feffdaa5feff02acfeffc2acfeffdaaffeff02b6feffc2b6feff82b7feffacb7feff96b8feffe8befeffd2bffeff34e1feff5ce7feff1ce8feffdce8feff08e9feffc8e9fefff0effeff20f6feff48fcfeff08fdfeffc8fdfefff4fdfeffbcfefeffec04ffffb405ffff1011ffff2624ffff9e2affff4231ffff6a37ffff2a38ffffea38ffff1639ffffd639fffffe3fffffbe40ffffc643ffffee49ffffae4affff6e4bffff9a4bffff5a4cffff8252ffff4253ffff7856ffffa05cffff605dffff205effff4c5effff0c5fffff3465fffff465ffff7469ffffb069ffff3071ffff0a72ffff0073ffff2879ffffe879ffffa87affffd27affff967bffffc281ffff8682ffff748bffff8894ffffb09affff709bffff98a1ffffc4a1ffffeca7ffff14aeffffd4aeffff24b2ffff62b2ffffe2b9ffffbcbaffff26c1ffff4ec7ffff0ec8ffff36ceffff62ceffff8ad4ffffb2daffff72dbffff1afaffff4ead00007ead000096ad0000d0ad0000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -669,9 +669,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 0, y: 0, z: 0}
+    m_Target: {x: 0, y: 3.3333335, z: 100}
     speed: 2
-    m_Value: {x: 1.4805169, y: -0.6622791, z: -0.2903242}
+    m_Value: {x: 0, y: 3.3333335, z: 100}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -699,17 +699,17 @@ MonoBehaviour:
       m_Size: {x: 1, y: 1}
     yGrid:
       m_Fade:
-        m_Target: 1
+        m_Target: 0
         speed: 2
-        m_Value: 1
+        m_Value: 0
       m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.4}
       m_Pivot: {x: 0, y: 0, z: 0}
       m_Size: {x: 1, y: 1}
     zGrid:
       m_Fade:
-        m_Target: 0
+        m_Target: 1
         speed: 2
-        m_Value: 0
+        m_Value: 1
       m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.4}
       m_Pivot: {x: 0, y: 0, z: 0}
       m_Size: {x: 1, y: 1}
@@ -717,17 +717,17 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.08717229, y: 0.89959055, z: -0.21045254, w: -0.3726226}
+    m_Target: {x: 0, y: 0, z: 0, w: 1}
     speed: 2
-    m_Value: {x: 0.22975294, y: 0, z: 0, w: 0.973249}
+    m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 10
+    m_Target: 7.7593226
     speed: 2
-    m_Value: 7.2292695
+    m_Value: 7.7593226
   m_Ortho:
-    m_Target: 0
+    m_Target: 1
     speed: 2
-    m_Value: 0
+    m_Value: 1
   m_CameraSettings:
     m_Speed: 1
     m_SpeedNormalized: 0.5
@@ -891,7 +891,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets/Free Low Poly Chess Set/Knight/Texture
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
@@ -899,16 +899,16 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts
+  - Assets/Free Low Poly Chess Set/Knight/Texture
   m_LastFoldersGridSize: -1
   m_LastProjectPath: C:\Users\Margaux\Little Horses
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 0e600000
-    m_LastClickedID: 24590
-    m_ExpandedIDs: 00000000e85f0000ea5f0000ec5f0000ee5f0000f05f000000ca9a3b
+    m_SelectedIDs: a4fb0000
+    m_LastClickedID: 64420
+    m_ExpandedIDs: 00000000e85f0000ea5f0000ee5f0000f05f0000086000009efb000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -963,8 +963,8 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 0
-    m_ExpandedInstanceIDs: c6230000e45c000000000000
+    m_HadKeyboardFocusLastEvent: 1
+    m_ExpandedInstanceIDs: c6230000e45c000000000000d6fb0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
