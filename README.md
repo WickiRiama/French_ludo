@@ -1,6 +1,6 @@
 # French Ludo / Les petits chevaux
 
-A 3D boardgmae
+A 3D boardgame
 
 ## Description
 
